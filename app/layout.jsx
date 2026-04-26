@@ -1,4 +1,5 @@
 import './globals.css';
+import 'react-quill-new/dist/quill.snow.css';
 
 import { siteConfig } from '@/lib/site-config';
 

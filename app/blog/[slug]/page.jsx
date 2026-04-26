@@ -1,6 +1,7 @@
 import { notFound } from 'next/navigation';
 
 import SiteShell from '@/components/SiteShell';
+import { preparePostContent } from '@/lib/blog-content';
 import { isMissingDatabaseConfigError } from '@/lib/db';
 import { getPublishedPostBySlug, getPublishedSlugs } from '@/lib/blog';
 import { absoluteUrl, siteConfig } from '@/lib/site-config';
@@ -79,6 +80,7 @@ export default async function BlogPostPage({ params }) {
     notFound();
   }
 
+  const { html: contentHtml, headings } = preparePostContent(post.contentHtml);
   const schema = [
     {
       '@context': 'https://schema.org',
@@ -112,6 +114,39 @@ export default async function BlogPostPage({ params }) {
       ],
     },
   ];
+
+  if (post.faqItems.length) {
+    schema.push({
+      '@context': 'https://schema.org',
+      '@type': 'FAQPage',
+      mainEntity: post.faqItems.map((item) => ({
+        '@type': 'Question',
+        name: item.question,
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: item.answer,
+        },
+      })),
+    });
+  }
+
+  if (post.howToSteps.length) {
+    schema.push({
+      '@context': 'https://schema.org',
+      '@type': 'HowTo',
+      name: post.title,
+      description: post.metaDescription || post.excerpt,
+      step: post.howToSteps.map((item, index) => ({
+        '@type': 'HowToStep',
+        position: index + 1,
+        name: item.name,
+        text: item.text,
+      })),
+    });
+  }
+
+  schema.push(...post.customSchemas);
+  const showTableOfContents = post.showTableOfContents && headings.length >= 3;
 
   return (
     <SiteShell currentPath="/blog" schema={schema}>
@@ -149,10 +184,69 @@ export default async function BlogPostPage({ params }) {
             </div>
           ) : null}
 
-          <div
-            className="blog-article-content"
-            dangerouslySetInnerHTML={{ __html: post.contentHtml }}
-          />
+          <div className={`blog-post-body${showTableOfContents ? ' blog-post-body-has-toc' : ''}`}>
+            {showTableOfContents ? (
+              <aside className="blog-post-toc">
+                <div className="blog-post-toc-card">
+                  <span className="eyebrow">On This Page</span>
+                  <h2>Table of Contents</h2>
+                  <nav>
+                    {headings.map((heading) => (
+                      <a
+                        key={heading.id}
+                        href={`#${heading.id}`}
+                        className={`toc-level-${heading.level}`}
+                      >
+                        {heading.text}
+                      </a>
+                    ))}
+                  </nav>
+                </div>
+              </aside>
+            ) : null}
+
+            <div
+              className="blog-article-content"
+              dangerouslySetInnerHTML={{ __html: contentHtml }}
+            />
+          </div>
+
+          {post.faqItems.length ? (
+            <section className="blog-schema-section">
+              <div className="section-head">
+                <span className="eyebrow">FAQ</span>
+                <h2>Frequently asked questions</h2>
+              </div>
+              <div className="blog-faq-list">
+                {post.faqItems.map((item, index) => (
+                  <article key={`${item.question}-${index}`} className="blog-faq-card">
+                    <h3>{item.question}</h3>
+                    <p>{item.answer}</p>
+                  </article>
+                ))}
+              </div>
+            </section>
+          ) : null}
+
+          {post.howToSteps.length ? (
+            <section className="blog-schema-section">
+              <div className="section-head">
+                <span className="eyebrow">How To</span>
+                <h2>Step-by-step breakdown</h2>
+              </div>
+              <div className="blog-howto-list">
+                {post.howToSteps.map((item, index) => (
+                  <article key={`${item.name}-${index}`} className="blog-howto-card">
+                    <span>{String(index + 1).padStart(2, '0')}</span>
+                    <div>
+                      <h3>{item.name}</h3>
+                      <p>{item.text}</p>
+                    </div>
+                  </article>
+                ))}
+              </div>
+            </section>
+          ) : null}
         </div>
       </article>
     </SiteShell>
