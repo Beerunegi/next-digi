@@ -16,6 +16,29 @@ function formatDate(value) {
   }).format(new Date(value));
 }
 
+function BlogCardMedia({ post }) {
+  if (post.coverImage) {
+    return (
+      <a href={`/blog/${post.slug}`} className="blog-card-media">
+        <img
+          src={post.coverImage}
+          alt={post.coverImageAlt || post.title}
+          loading="lazy"
+          decoding="async"
+        />
+      </a>
+    );
+  }
+
+  return (
+    <a href={`/blog/${post.slug}`} className="blog-card-media blog-card-media-placeholder">
+      <span className="eyebrow">Featured Article</span>
+      <strong>{post.title}</strong>
+      <small>Strategy, visibility, performance</small>
+    </a>
+  );
+}
+
 export async function generateStaticParams() {
   try {
     const categories = await getAllCategories();
@@ -95,11 +118,7 @@ export default async function BlogCategoryPage({ params }) {
           <div className="blog-post-grid">
             {posts.map((post) => (
               <article key={post.id} className="blog-card">
-                {post.coverImage ? (
-                  <a href={`/blog/${post.slug}`} className="blog-card-media">
-                    <img src={post.coverImage} alt={post.coverImageAlt || post.title} loading="lazy" />
-                  </a>
-                ) : null}
+                <BlogCardMedia post={post} />
                 <div className="blog-card-body">
                   <div className="blog-card-meta">
                     <span>{formatDate(post.publishedAt || post.createdAt)}</span>

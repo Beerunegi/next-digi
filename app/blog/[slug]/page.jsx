@@ -16,6 +16,10 @@ function formatDate(value) {
   }).format(new Date(value));
 }
 
+function readingLabel(post) {
+  return `${post.readingTimeMinutes} min read`;
+}
+
 export async function generateStaticParams() {
   try {
     const slugs = await getPublishedSlugs();
@@ -152,37 +156,68 @@ export default async function BlogPostPage({ params }) {
     <SiteShell currentPath="/blog" schema={schema}>
       <article className="section-gap blog-post-shell">
         <div className="container blog-post-layout">
-          <div className="blog-post-header">
-            <div className="blog-breadcrumbs">
-              <a href="/blog">Blog</a>
-              <span>/</span>
-              <span>{post.title}</span>
-            </div>
-            <h1>{post.title}</h1>
-            <p>{post.excerpt}</p>
-            <div className="blog-post-meta">
-              <span>{formatDate(post.publishedAt || post.createdAt)}</span>
-              <span>{post.readingTimeMinutes} min read</span>
-            </div>
-            <div className="blog-card-taxonomy">
-              {post.categories.map((category) => (
-                <a key={category.slug} href={`/blog/category/${category.slug}`}>
-                  {category.name}
-                </a>
-              ))}
-              {post.tags.map((tag) => (
-                <a key={tag.slug} href={`/blog/tag/${tag.slug}`}>
-                  #{tag.name}
-                </a>
-              ))}
-            </div>
-          </div>
+          <header className="blog-post-hero">
+            <div className="blog-post-hero-copy">
+              <div className="blog-breadcrumbs">
+                <a href="/blog">Blog</a>
+                <span>/</span>
+                <span>{post.title}</span>
+              </div>
 
-          {post.coverImage ? (
-            <div className="blog-post-cover">
-              <img src={post.coverImage} alt={post.coverImageAlt || post.title} />
+              <div className="blog-card-taxonomy blog-post-taxonomy">
+                {post.categories.map((category) => (
+                  <a key={category.slug} href={`/blog/category/${category.slug}`}>
+                    {category.name}
+                  </a>
+                ))}
+                {post.tags.map((tag) => (
+                  <a key={tag.slug} href={`/blog/tag/${tag.slug}`}>
+                    #{tag.name}
+                  </a>
+                ))}
+              </div>
+
+              <div className="blog-post-header">
+                <span className="eyebrow">Growth Journal</span>
+                <h1>{post.title}</h1>
+                <p>{post.excerpt}</p>
+              </div>
+
+              <div className="blog-post-meta-strip">
+                <div className="blog-post-meta-card">
+                  <span className="blog-post-meta-label">Published</span>
+                  <strong>{formatDate(post.publishedAt || post.createdAt)}</strong>
+                </div>
+                <div className="blog-post-meta-card">
+                  <span className="blog-post-meta-label">Reading time</span>
+                  <strong>{readingLabel(post)}</strong>
+                </div>
+                <div className="blog-post-meta-card">
+                  <span className="blog-post-meta-label">Written by</span>
+                  <strong>{post.authorName}</strong>
+                </div>
+              </div>
             </div>
-          ) : null}
+
+            <div className="blog-post-cover">
+              {post.coverImage ? (
+                <img
+                  src={post.coverImage}
+                  alt={post.coverImageAlt || post.title}
+                  loading="eager"
+                  decoding="async"
+                />
+              ) : (
+                <div className="blog-post-cover-placeholder">
+                  <span className="eyebrow">Featured Story</span>
+                  <strong>{post.title}</strong>
+                  <p>
+                    Practical SEO, AIO, and growth ideas from the Digi Web Tech team.
+                  </p>
+                </div>
+              )}
+            </div>
+          </header>
 
           <div className={`blog-post-body${showTableOfContents ? ' blog-post-body-has-toc' : ''}`}>
             {showTableOfContents ? (
@@ -205,10 +240,20 @@ export default async function BlogPostPage({ params }) {
               </aside>
             ) : null}
 
-            <div
-              className="blog-article-content"
-              dangerouslySetInnerHTML={{ __html: contentHtml }}
-            />
+            <div className="blog-post-main">
+              <div className="blog-article-reading-bar">
+                <span className="eyebrow">Article Overview</span>
+                <p>
+                  This article is structured for fast scanning, deeper reading, and search-first
+                  learning across desktop and mobile.
+                </p>
+              </div>
+
+              <div
+                className="blog-article-content"
+                dangerouslySetInnerHTML={{ __html: contentHtml }}
+              />
+            </div>
           </div>
 
           {post.faqItems.length ? (
