@@ -85,13 +85,14 @@ export default async function BlogPostPage({ params }) {
   }
 
   const { html: contentHtml, headings } = preparePostContent(post.contentHtml);
+  const featureImage = post.coverImage;
   const schema = [
     {
       '@context': 'https://schema.org',
       '@type': 'BlogPosting',
       headline: post.title,
       description: post.metaDescription || post.excerpt,
-      image: post.coverImage ? [post.coverImage] : undefined,
+      image: featureImage ? [featureImage] : undefined,
       datePublished: post.publishedAt,
       dateModified: post.updatedAt || post.publishedAt,
       author: {
@@ -157,7 +158,19 @@ export default async function BlogPostPage({ params }) {
       <article className="section-gap blog-post-shell">
         <div className="container blog-post-layout">
           <header className="blog-post-hero">
-            <div className="blog-post-hero-copy">
+            {featureImage ? (
+              <div className="blog-post-hero-media">
+                <img
+                  src={featureImage}
+                  alt={post.coverImageAlt || post.title}
+                  loading="eager"
+                  decoding="async"
+                  fetchPriority="high"
+                />
+              </div>
+            ) : null}
+
+            <div className={`blog-post-hero-copy${featureImage ? ' blog-post-hero-copy-overlap' : ''}`}>
               <div className="blog-breadcrumbs">
                 <a href="/blog">Blog</a>
                 <span>/</span>
@@ -197,25 +210,6 @@ export default async function BlogPostPage({ params }) {
                   <strong>{post.authorName}</strong>
                 </div>
               </div>
-            </div>
-
-            <div className="blog-post-cover">
-              {post.coverImage ? (
-                <img
-                  src={post.coverImage}
-                  alt={post.coverImageAlt || post.title}
-                  loading="eager"
-                  decoding="async"
-                />
-              ) : (
-                <div className="blog-post-cover-placeholder">
-                  <span className="eyebrow">Featured Story</span>
-                  <strong>{post.title}</strong>
-                  <p>
-                    Practical SEO, AIO, and growth ideas from the Digi Web Tech team.
-                  </p>
-                </div>
-              )}
             </div>
           </header>
 
