@@ -10169,4 +10169,81 @@ html, body {
   .mobile-sticky-bar {
     padding-bottom: env(safe-area-inset-bottom, 16px);
   }
+
+  /* SEO Concept (e.g. GEO Optimization) Page Fixes */
+  .seo-concept-hero h1 {
+    font-size: clamp(1.6rem, 6.5vw, 2.1rem) !important;
+    line-height: 1.1 !important;
+  }
+  
+  .seo-concept-card-grid {
+    grid-auto-columns: minmax(260px, 85vw) !important;
+    padding-left: 10px !important;
+    padding-right: 10px !important;
+  }
+
+  .seo-concept-carousel-btn {
+    min-width: 44px !important;
+    min-height: 44px !important;
+    padding: 8px !important;
+    font-size: 0.6rem !important;
+  }
+
+  .seo-concept-process-grid {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 16px !important;
+  }
+
+  .seo-concept-step {
+    width: 100% !important;
+  }
+
+  .seo-concept-hero-points {
+    display: flex !important;
+    flex-wrap: wrap !important;
+  }
+
+  /* Specific GEO layout fixes from verification */
+  .seo-concept-card-grid {
+    grid-auto-flow: row !important;
+    grid-template-columns: 1fr !important;
+    overflow-x: hidden !important;
+    padding: 0 !important;
+    gap: 20px !important;
+  }
+
+  .seo-concept-service-card {
+    scroll-snap-align: none !important;
+  }
+  
+  .seo-concept-carousel-controls {
+    display: none !important;
+  }
+
+  /* Text Scaling Fixes */
+  .seo-concept-copy h1,
+  .seo-concept-section-head h2,
+  .seo-concept-section-split h2,
+  .seo-concept-tools-copy h2 {
+    font-size: clamp(1.4rem, 6vw, 1.8rem) !important;
+    line-height: 1.2 !important;
+  }
+
+  /* Button Padding Fixes */
+  .seo-concept-actions .btn {
+    padding: 10px 16px !important;
+    font-size: 0.85rem !important;
+  }
+
+  /* Header Layout Fix */
+  .mobile-header-cta {
+    display: none !important;
+  }
+  
+  .nav-wrap {
+    flex-wrap: wrap;
+    min-height: auto !important;
+    padding: 10px !important;
+  }
 }
