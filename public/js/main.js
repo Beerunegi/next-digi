@@ -1,5 +1,28 @@
 const menuButton = document.querySelector('.menu-toggle');
 const topNav = document.querySelector('#topNav');
+const localImageFallbacks = [
+  '/images/home/photo-1542744094-3a31f272c490.jpg',
+  '/images/home/photo-1460925895917-afdab827c52f.jpg',
+  '/images/home/photo-1516321318423-f06f85e504b3.jpg',
+  '/images/home/photo-1562577309-4932fdd64cd1.jpg',
+  '/images/services/photo-seo-dash.jpg',
+  '/images/services/photo-meta-ads.jpg'
+];
+
+const applyImageFallback = (img) => {
+  if (!img || img.dataset.fallbackApplied === 'true') return;
+  img.dataset.fallbackApplied = 'true';
+  const index = Math.abs((img.alt || img.src || '').length) % localImageFallbacks.length;
+  img.src = localImageFallbacks[index];
+};
+
+document.querySelectorAll('img').forEach((img) => {
+  img.addEventListener('error', () => applyImageFallback(img), { once: true });
+
+  if (img.complete && img.naturalWidth === 0) {
+    applyImageFallback(img);
+  }
+});
 
 if (menuButton && topNav) {
   const closeMenu = () => {
@@ -47,6 +70,11 @@ if (menuButton && topNav) {
 const revealTargets = document.querySelectorAll('.reveal');
  
 if (revealTargets.length) {
+  document.documentElement.classList.add('reveal-ready');
+
+  if (!('IntersectionObserver' in window)) {
+    revealTargets.forEach((item) => item.classList.add('show'));
+  } else {
   const observer = new IntersectionObserver(
     (entries) => {
       entries.forEach((entry) => {
@@ -70,6 +98,7 @@ if (revealTargets.length) {
     item.style.transitionDelay = `${delay}ms`;
     observer.observe(item);
   });
+  }
 }
 
 const counters = document.querySelectorAll('[data-counter]');

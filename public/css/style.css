@@ -726,17 +726,23 @@ a {
 }
 
 .reveal {
-  opacity: 0;
-  transform: translateY(30px);
+  opacity: 1;
+  transform: translate(0, 0);
   transition: opacity 0.8s cubic-bezier(0.2, 0, 0.2, 1), transform 0.8s cubic-bezier(0.2, 0, 0.2, 1);
   will-change: opacity, transform;
 }
 
-.reveal-up { transform: translateY(50px); }
-.reveal-down { transform: translateY(-50px); }
-.reveal-left { transform: translateX(-50px); }
-.reveal-right { transform: translateX(50px); }
+.reveal-ready .reveal {
+  opacity: 0;
+  transform: translateY(30px);
+}
 
+.reveal-ready .reveal-up { transform: translateY(50px); }
+.reveal-ready .reveal-down { transform: translateY(-50px); }
+.reveal-ready .reveal-left { transform: translateX(-50px); }
+.reveal-ready .reveal-right { transform: translateX(50px); }
+
+.reveal-ready .reveal.show,
 .reveal.show {
   opacity: 1;
   transform: translate(0, 0);

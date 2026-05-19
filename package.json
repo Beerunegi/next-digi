@@ -4,14 +4,19 @@
   "description": "Digi Web Tech website migrated to Next.js with blog CMS support",
   "main": "index.js",
   "scripts": {
+    "clean": "node scripts/clean-next.mjs",
     "dev": "next dev",
-    "build": "next build",
+    "dev:clean": "npm run clean && next dev",
+    "build": "npm run clean && next build",
     "start": "next start",
     "lint": "next lint"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
+  "engines": {
+    "node": ">=20 <25"
+  },
   "dependencies": {
     "bcryptjs": "^2.4.3",
     "cloudinary": "^2.5.1",
