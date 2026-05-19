@@ -21,6 +21,19 @@
   gap: 24px;
 }
 
+.blog-hero {
+  position: relative;
+  overflow: hidden;
+}
+
+.blog-hero::after {
+  content: "";
+  position: absolute;
+  inset: auto 0 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(1, 160, 157, 0.28), transparent);
+}
+
 .blog-hero-grid,
 .admin-dashboard-header,
 .admin-editor-header {
@@ -53,6 +66,7 @@
 .blog-search-card {
   display: grid;
   gap: 12px;
+  align-self: stretch;
 }
 
 .blog-search-card input,
@@ -124,6 +138,16 @@
   border-radius: 14px;
   background: rgba(244, 247, 251, 0.88);
   color: var(--muted);
+  min-width: 0;
+  transition: background 0.2s ease, color 0.2s ease, transform 0.2s ease;
+}
+
+.blog-taxonomy-list a:hover,
+.blog-tag-cloud a:hover,
+.blog-card-taxonomy a:hover {
+  background: rgba(1, 160, 157, 0.14);
+  color: #075f5c;
+  transform: translateY(-1px);
 }
 
 .blog-taxonomy-list a span {
@@ -230,6 +254,10 @@
 
 .blog-card-body p {
   margin: 0;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
 .blog-card-meta,
@@ -254,6 +282,14 @@
 .admin-auth-card {
   max-width: 680px;
   margin: 0 auto;
+}
+
+.blog-post-grid + .blog-empty-state {
+  margin-top: 24px;
+}
+
+.blog-empty-state .btn {
+  margin-top: 12px;
 }
 
 .blog-post-layout {
@@ -544,9 +580,9 @@
   width: 100%;
   display: block;
   overflow-x: auto;
+  overflow-y: hidden;
   border-collapse: collapse;
   margin: 24px 0;
-  overflow: hidden;
   border-radius: 18px;
   white-space: nowrap;
 }
@@ -570,6 +606,15 @@
   background: #0f172a;
   color: #f8fafc;
   white-space: pre-wrap;
+}
+
+.blog-article-content iframe {
+  width: 100%;
+  max-width: 100%;
+  aspect-ratio: 16 / 9;
+  height: auto;
+  border: 0;
+  border-radius: 18px;
 }
 
 .blog-article-content blockquote {
@@ -834,6 +879,7 @@
 
   .blog-sidebar {
     position: static;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
   .blog-post-toc {
@@ -851,6 +897,14 @@
 }
 
 @media (max-width: 760px) {
+  .blog-hero,
+  .blog-section,
+  .blog-taxonomy-shell,
+  .blog-post-shell {
+    padding-top: 44px;
+    padding-bottom: 44px;
+  }
+
   .blog-hero-grid,
   .blog-post-grid,
   .admin-dashboard-header,
@@ -870,29 +924,90 @@
   .blog-article-content,
   .blog-post-hero-copy,
   .blog-post-toc-card,
+  .blog-search-card,
+  .blog-filter-card,
   .blog-article-reading-bar,
   .admin-post-row,
   .admin-editor-shell,
   .blog-card-body {
-    padding: 20px;
+    padding: 18px;
+    border-radius: 18px;
+  }
+
+  .blog-sidebar {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .blog-taxonomy-list {
+    flex-direction: row;
+    overflow-x: auto;
+    flex-wrap: nowrap;
+    padding-bottom: 4px;
+    scroll-snap-type: x proximity;
+  }
+
+  .blog-taxonomy-list a {
+    min-width: max-content;
+    scroll-snap-align: start;
+  }
+
+  .blog-tag-cloud {
+    max-height: 132px;
+    overflow: auto;
+  }
+
+  .blog-search-card .btn {
+    width: 100%;
   }
 
   .blog-post-meta-strip {
     grid-template-columns: 1fr;
+    gap: 12px;
   }
 
   .blog-post-hero-copy-overlap {
-    width: calc(100% - 24px);
+    width: calc(100% - 16px);
     margin-top: -24px;
   }
 
   .blog-post-hero-media,
   .blog-post-hero-media img {
-    min-height: 220px;
+    min-height: 210px;
+    border-radius: 22px;
+  }
+
+  .blog-post-header h1 {
+    font-size: clamp(1.8rem, 9vw, 2.4rem);
+    line-height: 1.05;
+  }
+
+  .blog-card-media-placeholder {
+    padding: 18px;
   }
 
   .blog-post-toc-card nav {
     max-height: none;
     overflow: visible;
+  }
+
+  .blog-howto-card {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 420px) {
+  .blog-card,
+  .blog-search-card,
+  .blog-filter-card,
+  .blog-article-content,
+  .blog-post-hero-copy,
+  .blog-post-toc-card,
+  .blog-article-reading-bar {
+    border-radius: 16px;
+  }
+
+  .blog-card-media {
+    aspect-ratio: 4 / 3;
   }
 }

@@ -130,6 +130,19 @@ export default async function BlogCategoryPage({ params }) {
               </article>
             ))}
           </div>
+
+          {databaseUnavailable ? (
+            <div className="blog-empty-state">
+              <h2>Blog setup is almost ready.</h2>
+              <p>Add your MySQL connection values to load category posts.</p>
+            </div>
+          ) : !posts.length ? (
+            <div className="blog-empty-state">
+              <h2>No posts in this category yet.</h2>
+              <p>Explore another category or return to the main blog.</p>
+              <a className="btn" href="/blog">Back to Blog</a>
+            </div>
+          ) : null}
         </div>
       </section>
     </SiteShell>
